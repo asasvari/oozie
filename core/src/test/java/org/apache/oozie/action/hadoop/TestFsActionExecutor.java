@@ -538,6 +538,7 @@ public class TestFsActionExecutor extends ActionExecutorTestCase {
         assertEquals("rwx------", fs.getFileStatus(new Path(basePath + "/10/dir1")).getPermission().toString());
         assertEquals("rwx------", fs.getFileStatus(new Path(basePath + "/10/dir2")).getPermission().toString());
         assertEquals("rwx------", fs.getFileStatus(new Path(basePath + "/11/dir3")).getPermission().toString());
+        assertEquals("rwx------", fs.getFileStatus(new Path(basePath + "/10/dir1/file1")).getPermission().toString());
 
         fs.delete(basePath, true);
     }

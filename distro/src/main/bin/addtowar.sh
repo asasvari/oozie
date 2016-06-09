@@ -117,7 +117,7 @@ function getHadoopJars() {
     hadoopJars="hadoop-mapreduce-client-core${suffix}.jar:hadoop-mapreduce-client-common${suffix}.jar:hadoop-mapreduce-client-jobclient${suffix}.jar:hadoop-mapreduce-client-app${suffix}.jar:hadoop-yarn-common${suffix}.jar:hadoop-yarn-api${suffix}.jar:hadoop-yarn-client${suffix}.jar:hadoop-hdfs${suffix}.jar:hadoop-common${suffix}.jar:hadoop-auth${suffix}.jar:guava*.jar:protobuf-*.jar:jackson-core-asl-*.jar:jackson-mapper-asl-*.jar:commons-configuration-*.jar:commons-cli-*.jar:commons-io-*.jar"
   else
     echo
-    echo "Exiting: Unsupported Hadoop version '${hadoopVer}', supported versions: 0.20.1, 0.20.2, 0.20.104, 0.20.200, 0.23.x and 2.x"
+    echo "Exiting: Unsupported Hadoop version '${hadoopVer}', supported versions: 2.x"
     echo
     cleanUp
     exit -1;
