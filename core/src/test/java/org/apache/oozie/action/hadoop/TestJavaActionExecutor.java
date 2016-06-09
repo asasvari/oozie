@@ -113,7 +113,7 @@ public class TestJavaActionExecutor extends ActionExecutorTestCase {
         }
 
         conf = new XConfiguration();
-        conf.set("mapred.job.tracker", "a");
+        conf.set(JavaActionExecutor.HADOOP_YARN_RM, "a");
         try {
             JavaActionExecutor.checkForDisallowedProps(conf, "x");
             fail();
@@ -200,7 +200,7 @@ public class TestJavaActionExecutor extends ActionExecutorTestCase {
 
         conf = ae.createBaseHadoopConf(context, actionXml);
         assertEquals(protoConf.get(WorkflowAppService.HADOOP_USER), conf.get(WorkflowAppService.HADOOP_USER));
-        assertEquals(getJobTrackerUri(), conf.get("mapred.job.tracker"));
+        assertEquals(getJobTrackerUri(), conf.get(JavaActionExecutor.HADOOP_YARN_RM));
         assertEquals(getNameNodeUri(), conf.get("fs.default.name"));
 
         conf = ae.createBaseHadoopConf(context, actionXml);
@@ -350,7 +350,7 @@ public class TestJavaActionExecutor extends ActionExecutorTestCase {
         assertNotNull(consoleUrl);
 
         JobConf jobConf = Services.get().get(HadoopAccessorService.class).createJobConf(jobTracker);
-        jobConf.set("mapred.job.tracker", jobTracker);
+        jobConf.set(JavaActionExecutor.HADOOP_YARN_RM, jobTracker);
 
         JobClient jobClient =
             Services.get().get(HadoopAccessorService.class).createJobClient(getTestUser(), jobConf);
@@ -2778,25 +2778,25 @@ public class TestJavaActionExecutor extends ActionExecutorTestCase {
 
         Configuration conf = new Configuration(false);
         Assert.assertEquals(0, conf.size());
-        conf.set("mapred.job.tracker", getJobTrackerUri());
+        conf.set(JavaActionExecutor.HADOOP_YARN_RM, getJobTrackerUri());
         ae.setupLauncherConf(conf, actionXmlWithConfiguration, null, null);
-        assertEquals(getJobTrackerUri(), conf.get("mapred.job.tracker"));
+        assertEquals(getJobTrackerUri(), conf.get(JavaActionExecutor.HADOOP_YARN_RM));
         assertEquals("AA", conf.get("oozie.launcher.a"));
         assertEquals("AA", conf.get("a"));
         assertEquals("action.barbar", conf.get("oozie.launcher.action.foofoo"));
         assertEquals("action.barbar", conf.get("action.foofoo"));
         assertEquals("true", conf.get("mapreduce.job.ubertask.enable"));
         if (conf.size() == 7) {
-            assertEquals(getJobTrackerUri(), conf.get("mapreduce.jobtracker.address"));
+            assertEquals(getJobTrackerUri(), conf.get(JavaActionExecutor.HADOOP_YARN_RM));
         } else {
             assertEquals(6, conf.size());
         }
 
         conf = new Configuration(false);
         Assert.assertEquals(0, conf.size());
-        conf.set("mapred.job.tracker", getJobTrackerUri());
+        conf.set(JavaActionExecutor.HADOOP_YARN_RM, getJobTrackerUri());
         ae.setupLauncherConf(conf, actionXmlWithoutConfiguration, null, null);
-        assertEquals(getJobTrackerUri(), conf.get("mapred.job.tracker"));
+        assertEquals(getJobTrackerUri(), conf.get(JavaActionExecutor.HADOOP_YARN_RM));
         assertEquals("action.barbar", conf.get("oozie.launcher.action.foofoo"));
         assertEquals("action.barbar", conf.get("action.foofoo"));
         assertEquals("true", conf.get("mapreduce.job.ubertask.enable"));
