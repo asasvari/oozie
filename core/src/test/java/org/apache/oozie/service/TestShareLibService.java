@@ -43,8 +43,8 @@ import org.apache.oozie.action.hadoop.JavaActionExecutor;
 import org.apache.oozie.action.hadoop.PigActionExecutor;
 import org.apache.oozie.action.hadoop.TestJavaActionExecutor;
 import org.apache.oozie.client.OozieClient;
-import org.apache.oozie.hadoop.utils.HadoopShims;
 import org.apache.oozie.test.XFsTestCase;
+import org.apache.oozie.util.FSUtils;
 import org.apache.oozie.util.IOUtils;
 import org.apache.oozie.util.XConfiguration;
 import org.apache.oozie.util.XmlUtils;
@@ -496,7 +496,7 @@ public class TestShareLibService extends XFsTestCase {
             assertTrue(shareLibService.getShareLibJars("pig").get(0).getName().endsWith("pig.jar"));
             assertTrue(shareLibService.getShareLibJars("directjar").get(0).getName().endsWith("direct.jar"));
             // Skipping for hadoop - 1.x because symlink is not supported
-            if (HadoopShims.isSymlinkSupported()) {
+            if (FSUtils.isSymlinkSupported()) {
                 assertTrue(
                         shareLibService.getShareLibJars("linkFile").get(0).getName().endsWith("targetOfLinkFile.xml"));
             }
@@ -615,8 +615,7 @@ public class TestShareLibService extends XFsTestCase {
 
     @Test
     public void testMetafileSymlink() throws ServiceException, IOException {
-        // Assume.assumeTrue("Skipping for hadoop - 1.x",HadoopFileSystem.isSymlinkSupported());
-        if (!HadoopShims.isSymlinkSupported()) {
+        if (!FSUtils.isSymlinkSupported()) {
             return;
         }
 
@@ -651,7 +650,7 @@ public class TestShareLibService extends XFsTestCase {
 
             createFile(hive_site.toString());
 
-            HadoopShims fileSystem = new HadoopShims(fs);
+            FSUtils fileSystem = new FSUtils(fs);
             fileSystem.createSymlink(basePath, symlink, true);
             fileSystem.createSymlink(hive_site, symlink_hive_site, true);
 
@@ -667,9 +666,9 @@ public class TestShareLibService extends XFsTestCase {
                 ShareLibService shareLibService = Services.get().get(ShareLibService.class);
                 assertEquals(shareLibService.getShareLibJars("pig").size(), 2);
                 assertEquals(shareLibService.getShareLibJars("hive_conf").size(), 1);
-                new HadoopShims(fs).createSymlink(basePath1, symlink, true);
-                new HadoopShims(fs).createSymlink(hive_site1, symlink_hive_site, true);
-                assertEquals(new HadoopShims(fs).getSymLinkTarget(shareLibService.getShareLibJars("hive_conf").get(0)),
+                new FSUtils(fs).createSymlink(basePath1, symlink, true);
+                new FSUtils(fs).createSymlink(hive_site1, symlink_hive_site, true);
+                assertEquals(new FSUtils(fs).getSymLinkTarget(shareLibService.getShareLibJars("hive_conf").get(0)),
                         hive_site1);
                 assertEquals(shareLibService.getShareLibJars("pig").size(), 3);
             }
@@ -781,7 +780,7 @@ public class TestShareLibService extends XFsTestCase {
             String symlinkTarget = linkDir.toString() + Path.SEPARATOR + "targetOfLinkFile.xml";
             createFile(directJarPath);
             createFile(symlinkTarget);
-            HadoopShims fsShim = new HadoopShims(fs);
+            FSUtils fsShim = new FSUtils(fs);
             fsShim.createSymlink(new Path(symlinkTarget), new Path(symlink), true);
 
             prop.put(ShareLibService.SHARE_LIB_CONF_PREFIX + ".pig", "/user/test/" + basePath.toString());
@@ -991,16 +990,11 @@ public class TestShareLibService extends XFsTestCase {
     private void verifyFilesInDistributedCache(URI[] cacheFiles, String... files) {
 
         String cacheFilesStr = Arrays.toString(cacheFiles);
-        if (new HadoopShims(getFileSystem()).isYARN()) {
-            // Hadoop 2 has two extra jars
-            assertEquals(cacheFiles.length, files.length + 2);
-            assertTrue(cacheFilesStr.contains("MRAppJar.jar"));
-            assertTrue(cacheFilesStr.contains("hadoop-mapreduce-client-jobclient-"));
+        // Hadoop 2 has two extra jars
+        assertEquals(cacheFiles.length, files.length + 2);
+        assertTrue(cacheFilesStr.contains("MRAppJar.jar"));
+        assertTrue(cacheFilesStr.contains("hadoop-mapreduce-client-jobclient-"));
 
-        }
-        else {
-            assertEquals(cacheFiles.length, files.length);
-        }
         for (String file : files) {
             assertTrue(cacheFilesStr.contains(file));
 

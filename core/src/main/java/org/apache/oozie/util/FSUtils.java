@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.oozie.hadoop.utils;
+package org.apache.oozie.util;
 
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -24,10 +24,10 @@ import org.apache.hadoop.fs.Path;
 import java.io.IOException;
 import java.net.URI;
 
-public class HadoopShims {
+public class FSUtils {
     FileSystem fs;
 
-    public HadoopShims(FileSystem fs) {
+    public FSUtils(FileSystem fs) {
         this.fs = fs;
     }
 
@@ -60,9 +60,4 @@ public class HadoopShims {
     public void createSymlink(Path target, Path link, boolean createParent) throws IOException {
         fs.createSymlink(target, link, createParent);
     }
-
-    public static boolean isYARN() {
-        return true;
-    }
-
 }

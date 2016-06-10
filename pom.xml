@@ -76,7 +76,7 @@
         </oozie.test.default.config.file>
         <oozie.test.config.file>${oozie.test.default.config.file}</oozie.test.config.file>
 
-        <hadoop.version>2.3.0</hadoop.version>
+        <hadoop.version>2.4.0</hadoop.version>
         <hadoop.majorversion>2</hadoop.majorversion>
         <hadooplib.version>hadoop-${hadoop.majorversion}-${project.version}</hadooplib.version>
         <oozie.hadoop-utils.version>hadoop-${hadoop.majorversion}-${project.version}</oozie.hadoop-utils.version>
@@ -86,6 +86,7 @@
 
         <clover.license>/home/jenkins/tools/clover/latest/lib/clover.license</clover.license>
 
+
          <!-- Sharelib component versions -->
          <hive.version>0.13.1</hive.version>
          <pig.version>0.12.1</pig.version>
@@ -93,9 +94,8 @@
          <sqoop.version>1.4.3</sqoop.version>
          <spark.version>1.6.1</spark.version>
          <spark.guava.version>14.0.1</spark.guava.version>
-         <sqoop.classifier>hadoop100</sqoop.classifier>
+         <sqoop.classifier>hadoop200</sqoop.classifier>
          <streaming.version>${hadoop.version}</streaming.version>
-         <distcp.version>${hadoop.version}</distcp.version>
          <hadoop.auth.version>${hadoop.version}</hadoop.auth.version>
 
          <!-- Tomcat version -->
@@ -104,12 +104,11 @@
          <openjpa.version>2.2.2</openjpa.version>
          <xerces.version>2.10.0</xerces.version>
          <curator.version>2.5.0</curator.version>
-         <jackson.version>1.8.8</jackson.version>
+         <jackson.version>1.9.13</jackson.version>
          <log4j.version>1.2.17</log4j.version>
     </properties>
 
     <modules>
-        <module>hadooplibs</module>
         <module>client</module>
         <module>core</module>
         <module>sharelib</module>
@@ -430,7 +429,6 @@
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-distcp</artifactId>
-                <version>${distcp.version}</version>
                 <scope>compile</scope>
                 <exclusions>
                     <exclusion>
@@ -443,7 +441,7 @@
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-tools</artifactId>
-                <version>${distcp.version}</version>
+                <version>hadoop-2-4.3.0-SNAPSHOT</version>
                 <scope>compile</scope>
                 <exclusions>
                     <exclusion>
@@ -1772,32 +1770,7 @@
             </build>
 
         </profile>
-	   <profile>
-            <id>hadoop-2</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <hadoop.version>2.4.0</hadoop.version>
-                <hadoop.majorversion>2</hadoop.majorversion>
-                <pig.classifier>h2</pig.classifier>
-                <sqoop.classifier>hadoop200</sqoop.classifier>
-                <jackson.version>1.9.13</jackson.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>hadoop-3</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <hadoop.version>3.0.0-SNAPSHOT</hadoop.version>
-                <hadoop.majorversion>3</hadoop.majorversion>
-                <pig.classifier>h2</pig.classifier>
-                <sqoop.classifier>hadoop200</sqoop.classifier>
-                <jackson.version>1.9.13</jackson.version>
-            </properties>
-        </profile>
+
         <profile>
             <id>loginServerExample</id>
             <activation>

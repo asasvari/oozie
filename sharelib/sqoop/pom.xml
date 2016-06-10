@@ -42,7 +42,7 @@
             <groupId>org.apache.sqoop</groupId>
             <artifactId>sqoop</artifactId>
             <scope>compile</scope>
-            <classifier>${sqoop.classifier}</classifier>
+            <classifier>hadoop${hadoop.majorversion}00</classifier>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.hadoop</groupId>

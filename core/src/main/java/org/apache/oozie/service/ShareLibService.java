@@ -51,11 +51,7 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.oozie.action.ActionExecutor;
 import org.apache.oozie.action.hadoop.JavaActionExecutor;
 import org.apache.oozie.client.rest.JsonUtils;
-import org.apache.oozie.hadoop.utils.HadoopShims;
-import org.apache.oozie.util.Instrumentable;
-import org.apache.oozie.util.Instrumentation;
-import org.apache.oozie.util.XConfiguration;
-import org.apache.oozie.util.XLog;
+import org.apache.oozie.util.*;
 import com.google.common.annotations.VisibleForTesting;
 
 import org.apache.oozie.ErrorCode;
@@ -352,12 +348,12 @@ public class ShareLibService implements Service, Instrumentable {
     }
 
     private void checkSymlink(String shareLibKey) throws IOException {
-        if (!HadoopShims.isSymlinkSupported() || symlinkMapping.get(shareLibKey) == null
+        if (!FSUtils.isSymlinkSupported() || symlinkMapping.get(shareLibKey) == null
                 || symlinkMapping.get(shareLibKey).isEmpty()) {
             return;
         }
 
-        HadoopShims fileSystem = new HadoopShims(fs);
+        FSUtils fileSystem = new FSUtils(fs);
         for (Path path : symlinkMapping.get(shareLibKey).keySet()) {
             if (!symlinkMapping.get(shareLibKey).get(path).equals(fileSystem.getSymLinkTarget(path))) {
                 synchronized (ShareLibService.class) {
@@ -636,16 +632,16 @@ public class ShareLibService implements Service, Instrumentable {
             throws IOException {
         List<Path> listOfPaths = new ArrayList<Path>();
         Map<Path, Path> symlinkMappingforAction = new HashMap<Path, Path>();
-        HadoopShims fileSystem = new HadoopShims(fs);
+        FSUtils fileSystem = new FSUtils(fs);
 
         for (String dfsPath : pathList) {
             Path path = new Path(dfsPath);
             getPathRecursively(fs, new Path(dfsPath), listOfPaths, shareLibKey, shareLibConfigMap);
-            if (HadoopShims.isSymlinkSupported() && fileSystem.isSymlink(path)) {
+            if (FSUtils.isSymlinkSupported() && fileSystem.isSymlink(path)) {
                 symlinkMappingforAction.put(path, fileSystem.getSymLinkTarget(path));
             }
         }
-        if (HadoopShims.isSymlinkSupported()) {
+        if (FSUtils.isSymlinkSupported()) {
             LOG.info("symlink for " + shareLibKey + ":" + symlinkMappingforAction);
             tmpSymlinkMapping.put(shareLibKey, symlinkMappingforAction);
         }

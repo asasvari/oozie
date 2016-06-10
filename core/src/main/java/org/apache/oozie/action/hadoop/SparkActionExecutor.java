@@ -40,7 +40,7 @@ import org.jdom.Namespace;
 
 public class SparkActionExecutor extends JavaActionExecutor {
     public static final String SPARK_MAIN_CLASS_NAME = "org.apache.oozie.action.hadoop.SparkMain";
-    public static final String TASK_USER_PRECEDENCE = "mapreduce.task.classpath.user.precedence"; // hadoop-2
+    public static final String TASK_USER_PRECEDENCE = "mapreduce.task.classpath.user.precedence";
     public static final String SPARK_MASTER = "oozie.spark.master";
     public static final String SPARK_MODE = "oozie.spark.mode";
     public static final String SPARK_OPTS = "oozie.spark.spark-opts";
