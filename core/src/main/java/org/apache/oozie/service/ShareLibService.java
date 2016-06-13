@@ -52,6 +52,7 @@ import org.apache.oozie.action.ActionExecutor;
 import org.apache.oozie.action.hadoop.JavaActionExecutor;
 import org.apache.oozie.client.rest.JsonUtils;
 import org.apache.oozie.util.*;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import org.apache.oozie.ErrorCode;
@@ -348,8 +349,7 @@ public class ShareLibService implements Service, Instrumentable {
     }
 
     private void checkSymlink(String shareLibKey) throws IOException {
-        if (!FSUtils.isSymlinkSupported() || symlinkMapping.get(shareLibKey) == null
-                || symlinkMapping.get(shareLibKey).isEmpty()) {
+        if (symlinkMapping.get(shareLibKey) == null || symlinkMapping.get(shareLibKey).isEmpty()) {
             return;
         }
 
@@ -637,14 +637,14 @@ public class ShareLibService implements Service, Instrumentable {
         for (String dfsPath : pathList) {
             Path path = new Path(dfsPath);
             getPathRecursively(fs, new Path(dfsPath), listOfPaths, shareLibKey, shareLibConfigMap);
-            if (FSUtils.isSymlinkSupported() && fileSystem.isSymlink(path)) {
+            if (fileSystem.isSymlink(path)) {
                 symlinkMappingforAction.put(path, fileSystem.getSymLinkTarget(path));
             }
         }
-        if (FSUtils.isSymlinkSupported()) {
-            LOG.info("symlink for " + shareLibKey + ":" + symlinkMappingforAction);
-            tmpSymlinkMapping.put(shareLibKey, symlinkMappingforAction);
-        }
+
+        LOG.info("symlink for " + shareLibKey + ":" + symlinkMappingforAction);
+        tmpSymlinkMapping.put(shareLibKey, symlinkMappingforAction);
+
         tmpShareLibMap.put(shareLibKey, listOfPaths);
         LOG.info("Share lib for " + shareLibKey + ":" + listOfPaths);
     }

@@ -495,11 +495,8 @@ public class TestShareLibService extends XFsTestCase {
             assertTrue(shareLibService.getShareLibJars("something_new").get(0).getName().endsWith("somethingNew.jar"));
             assertTrue(shareLibService.getShareLibJars("pig").get(0).getName().endsWith("pig.jar"));
             assertTrue(shareLibService.getShareLibJars("directjar").get(0).getName().endsWith("direct.jar"));
-            // Skipping for hadoop - 1.x because symlink is not supported
-            if (FSUtils.isSymlinkSupported()) {
-                assertTrue(
-                        shareLibService.getShareLibJars("linkFile").get(0).getName().endsWith("targetOfLinkFile.xml"));
-            }
+            assertTrue(shareLibService.getShareLibJars("linkFile").get(0).getName().endsWith("targetOfLinkFile.xml"));
+
             List<Path> listOfPaths = shareLibService.getShareLibJars("directjar");
             for (Path p : listOfPaths) {
                 assertTrue(p.toString().startsWith("hdfs"));
@@ -615,10 +612,6 @@ public class TestShareLibService extends XFsTestCase {
 
     @Test
     public void testMetafileSymlink() throws ServiceException, IOException {
-        if (!FSUtils.isSymlinkSupported()) {
-            return;
-        }
-
         services = new Services();
         setSystemProps();
         Configuration conf = services.get(ConfigurationService.class).getConf();
@@ -990,7 +983,7 @@ public class TestShareLibService extends XFsTestCase {
     private void verifyFilesInDistributedCache(URI[] cacheFiles, String... files) {
 
         String cacheFilesStr = Arrays.toString(cacheFiles);
-        // Hadoop 2 has two extra jars
+        // Hadoop 2 has the following jars too: MRAppJar.jar and hadoop-mapreduce-client-jobclient-
         assertEquals(cacheFiles.length, files.length + 2);
         assertTrue(cacheFilesStr.contains("MRAppJar.jar"));
         assertTrue(cacheFilesStr.contains("hadoop-mapreduce-client-jobclient-"));
