@@ -311,7 +311,7 @@
 
             <dependency>
                 <groupId>org.apache.oozie</groupId>
-                <artifactId>oozie-hadoop-auth</artifactId>
+                <artifactId>hadoop-auth</artifactId>
                 <version>${hadooplib.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -452,8 +452,8 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.oozie</groupId>
-                <artifactId>oozie-hadoop-distcp</artifactId>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-distcp</artifactId>
                 <version>${hadooplib.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -1450,8 +1450,8 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.oozie</groupId>
-                <artifactId>oozie-hadoop-utils</artifactId>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-utils</artifactId>
                 <version>${oozie.hadoop-utils.version}</version>
             </dependency>
 
