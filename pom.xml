@@ -429,6 +429,7 @@
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-distcp</artifactId>
+                <version>${hadoop.version}</version>
                 <scope>compile</scope>
                 <exclusions>
                     <exclusion>
@@ -441,7 +442,7 @@
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-tools</artifactId>
-                <version>hadoop-2-4.3.0-SNAPSHOT</version>
+                <version>${hadoop.version}</version>
                 <scope>compile</scope>
                 <exclusions>
                     <exclusion>
@@ -449,13 +450,6 @@
                         <groupId>org.apache.hadoop</groupId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.hadoop</groupId>
-                <artifactId>hadoop-distcp</artifactId>
-                <version>${hadooplib.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -1450,12 +1444,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.hadoop</groupId>
-                <artifactId>hadoop-utils</artifactId>
-                <version>${oozie.hadoop-utils.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>dk.brics.automaton</groupId>
                 <artifactId>automaton</artifactId>
                 <version>1.11-8</version>
@@ -1570,6 +1558,7 @@
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-clover2-plugin</artifactId>
+                <version>4.0.6</version>
                 <configuration>
                     <licenseLocation>${clover.license}</licenseLocation>
                     <generateXml>true</generateXml>
@@ -1583,6 +1572,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.1</version>
                 <configuration>
                     <xmlOutput>true</xmlOutput>
                     <findbugsXmlOutput>true</findbugsXmlOutput>
