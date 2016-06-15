@@ -77,8 +77,6 @@
         <oozie.test.config.file>${oozie.test.default.config.file}</oozie.test.config.file>
 
         <hadoop.version>2.4.0</hadoop.version>
-        <hadoop.majorversion>2</hadoop.majorversion>
-        <hadooplib.version>hadoop-${hadoop.majorversion}-${project.version}</hadooplib.version>
         <hbase.version>0.94.27</hbase.version>
 
         <dropwizard.metrics.version>3.1.0</dropwizard.metrics.version>
@@ -306,13 +304,6 @@
                 <artifactId>hadoop-minicluster</artifactId>
                 <version>${hadoop.version}</version>
                 <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.oozie</groupId>
-                <artifactId>hadoop-auth</artifactId>
-                <version>${hadooplib.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
