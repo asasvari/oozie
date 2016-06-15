@@ -162,8 +162,9 @@ public class TestWorkflowXClient extends DagServletTestCase {
                 catch (RuntimeException exception) {
                     assertEquals("java.lang.RuntimeException: namenode is not specified in conf", exception.toString());
                 }
-                // set fs.default.name
-                conf.setProperty(XOozieClient.NN, nn);
+                // set fs.defaultFS instead
+                conf.remove(XOozieClient.NN);
+                conf.setProperty(XOozieClient.NN_2, nn);
                 try {
                     wc.submitMapReduce(conf);
                     fail("submit client without LIBPATH should throw exception");

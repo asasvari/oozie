@@ -69,7 +69,14 @@ import org.apache.oozie.service.Services;
 import org.apache.oozie.service.ShareLibService;
 import org.apache.oozie.service.URIHandlerService;
 import org.apache.oozie.service.WorkflowAppService;
-import org.apache.oozie.util.*;
+import org.apache.oozie.util.ELEvaluationException;
+import org.apache.oozie.util.ELEvaluator;
+import org.apache.oozie.util.XLog;
+import org.apache.oozie.util.XConfiguration;
+import org.apache.oozie.util.XmlUtils;
+import org.apache.oozie.util.JobUtils;
+import org.apache.oozie.util.LogUtils;
+import org.apache.oozie.util.PropertiesUtils;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
@@ -134,7 +141,6 @@ public class JavaActionExecutor extends ActionExecutor {
         classes.add(LauncherMapper.class);
         classes.add(OozieLauncherInputFormat.class);
         classes.add(org.apache.oozie.action.hadoop.LauncherMain.class);
-        classes.add(FSUtils.class);
         classes.addAll(Services.get().get(URIHandlerService.class).getClassesForLauncher());
         return classes;
     }

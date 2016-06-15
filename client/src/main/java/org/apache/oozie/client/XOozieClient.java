@@ -34,7 +34,8 @@ import org.json.simple.JSONValue;
 
 public class XOozieClient extends OozieClient {
     public static final String RM = "yarn.resourcemanager.address";
-    public static final String NN = "fs.defaultFS";
+    public static final String NN = "fs.default.name";
+    public static final String NN_2  = "fs.defaultFS";
 
     public static final String PIG_SCRIPT = "oozie.pig.script";
 
@@ -119,8 +120,13 @@ public class XOozieClient extends OozieClient {
         }
 
         String NN = conf.getProperty(XOozieClient.NN);
+        String NN_2 = conf.getProperty(XOozieClient.NN_2);
         if (NN == null) {
+            if(NN_2 == null) {
                 throw new RuntimeException("namenode is not specified in conf");
+            } else {
+                NN = NN_2;
+            }
         }
 
         String libPath = conf.getProperty(LIBPATH);

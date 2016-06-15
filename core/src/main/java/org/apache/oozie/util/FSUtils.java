@@ -24,18 +24,8 @@ import org.apache.hadoop.fs.Path;
 import java.io.IOException;
 import java.net.URI;
 
-public class FSUtils {
-    FileSystem fs;
-
-    public FSUtils(FileSystem fs) {
-        this.fs = fs;
-    }
-
-    public static boolean isSymlinkSupported() {
-        return true;
-    }
-
-    public Path getSymLinkTarget(Path p) throws IOException {
+public final class FSUtils {
+    public static Path getSymLinkTarget(Path p, FileSystem fs) throws IOException {
         try {
             //getSymlink doesn't work with fragment name, need to remove fragment before calling getSymlink
             Path tempPath = new URI(p.toString()).getFragment() == null ? p : new Path(new URI(p.toString()).getPath());
@@ -46,7 +36,7 @@ public class FSUtils {
         }
     }
 
-    public boolean isSymlink(Path p) throws IOException {
+    public static boolean isSymlink(Path p, FileSystem fs) throws IOException {
         try {
             //isSymlink doesn't work with fragment name, need to remove fragment before checking for symlink
             Path tempPath = new URI(p.toString()).getFragment() == null ? p : new Path(new URI(p.toString()).getPath());
@@ -57,7 +47,7 @@ public class FSUtils {
         }
     }
 
-    public void createSymlink(Path target, Path link, boolean createParent) throws IOException {
+    public static void createSymlink(Path target, Path link, boolean createParent, FileSystem fs) throws IOException {
         fs.createSymlink(target, link, createParent);
     }
 }

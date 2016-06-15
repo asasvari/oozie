@@ -51,11 +51,13 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.oozie.action.ActionExecutor;
 import org.apache.oozie.action.hadoop.JavaActionExecutor;
 import org.apache.oozie.client.rest.JsonUtils;
-import org.apache.oozie.util.*;
-
 import com.google.common.annotations.VisibleForTesting;
-
 import org.apache.oozie.ErrorCode;
+import org.apache.oozie.util.Instrumentable;
+import org.apache.oozie.util.Instrumentation;
+import org.apache.oozie.util.FSUtils;
+import org.apache.oozie.util.XConfiguration;
+import org.apache.oozie.util.XLog;
 import org.jdom.JDOMException;
 
 public class ShareLibService implements Service, Instrumentable {
@@ -214,7 +216,7 @@ public class ShareLibService implements Service, Instrumentable {
      *
      * @param fs the FileSystem
      * @param path the Path
-     * @param perm is permission
+     * @param fsPerm is permission
      * @throws IOException Signals that an I/O exception has occurred.
      */
     private void recursiveChangePermissions(FileSystem fs, Path path, FsPermission fsPerm) throws IOException {
@@ -353,9 +355,8 @@ public class ShareLibService implements Service, Instrumentable {
             return;
         }
 
-        FSUtils fileSystem = new FSUtils(fs);
         for (Path path : symlinkMapping.get(shareLibKey).keySet()) {
-            if (!symlinkMapping.get(shareLibKey).get(path).equals(fileSystem.getSymLinkTarget(path))) {
+            if (!symlinkMapping.get(shareLibKey).get(path).equals(FSUtils.getSymLinkTarget(path, fs))) {
                 synchronized (ShareLibService.class) {
                     Map<String, List<Path>> tmpShareLibMap = new HashMap<String, List<Path>>(shareLibMap);
 
@@ -366,7 +367,7 @@ public class ShareLibService implements Service, Instrumentable {
                             symlinkMapping);
 
                     LOG.info(MessageFormat.format("Symlink target for [{0}] has changed, was [{1}], now [{2}]",
-                            shareLibKey, path, fileSystem.getSymLinkTarget(path)));
+                            shareLibKey, path, FSUtils.getSymLinkTarget(path, fs)));
                     loadShareLibMetaFile(tmpShareLibMap, tmpSymlinkMapping, tmpShareLibConfigMap, sharelibMappingFile,
                             shareLibKey);
                     shareLibMap = tmpShareLibMap;
@@ -632,13 +633,12 @@ public class ShareLibService implements Service, Instrumentable {
             throws IOException {
         List<Path> listOfPaths = new ArrayList<Path>();
         Map<Path, Path> symlinkMappingforAction = new HashMap<Path, Path>();
-        FSUtils fileSystem = new FSUtils(fs);
 
         for (String dfsPath : pathList) {
             Path path = new Path(dfsPath);
             getPathRecursively(fs, new Path(dfsPath), listOfPaths, shareLibKey, shareLibConfigMap);
-            if (fileSystem.isSymlink(path)) {
-                symlinkMappingforAction.put(path, fileSystem.getSymLinkTarget(path));
+            if (FSUtils.isSymlink(path, fs)) {
+                symlinkMappingforAction.put(path, FSUtils.getSymLinkTarget(path, fs));
             }
         }
 

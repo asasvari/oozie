@@ -643,15 +643,14 @@ public class TestShareLibService extends XFsTestCase {
 
             createFile(hive_site.toString());
 
-            FSUtils fileSystem = new FSUtils(fs);
-            fileSystem.createSymlink(basePath, symlink, true);
-            fileSystem.createSymlink(hive_site, symlink_hive_site, true);
+            FSUtils.createSymlink(basePath, symlink, true, fs);
+            FSUtils.createSymlink(hive_site, symlink_hive_site, true, fs);
 
             prop.put(ShareLibService.SHARE_LIB_CONF_PREFIX + ".pig", "/user/test/" + symlink.toString());
             prop.put(ShareLibService.SHARE_LIB_CONF_PREFIX + ".hive_conf", "/user/test/" + symlink_hive_site.toString()
                     + "#hive-site.xml");
             createTestShareLibMetaFile(fs, prop);
-            assertEquals(fileSystem.isSymlink(symlink), true);
+            assertEquals(FSUtils.isSymlink(symlink, fs), true);
 
             conf.set(ShareLibService.SHARELIB_MAPPING_FILE, fs.getUri() + "/user/test/config.properties");
             conf.set(ShareLibService.SHIP_LAUNCHER_JAR, "true");
@@ -659,9 +658,9 @@ public class TestShareLibService extends XFsTestCase {
                 ShareLibService shareLibService = Services.get().get(ShareLibService.class);
                 assertEquals(shareLibService.getShareLibJars("pig").size(), 2);
                 assertEquals(shareLibService.getShareLibJars("hive_conf").size(), 1);
-                new FSUtils(fs).createSymlink(basePath1, symlink, true);
-                new FSUtils(fs).createSymlink(hive_site1, symlink_hive_site, true);
-                assertEquals(new FSUtils(fs).getSymLinkTarget(shareLibService.getShareLibJars("hive_conf").get(0)),
+                FSUtils.createSymlink(basePath1, symlink, true, fs);
+                FSUtils.createSymlink(hive_site1, symlink_hive_site, true, fs);
+                assertEquals(FSUtils.getSymLinkTarget(shareLibService.getShareLibJars("hive_conf").get(0), fs),
                         hive_site1);
                 assertEquals(shareLibService.getShareLibJars("pig").size(), 3);
             }
@@ -773,8 +772,7 @@ public class TestShareLibService extends XFsTestCase {
             String symlinkTarget = linkDir.toString() + Path.SEPARATOR + "targetOfLinkFile.xml";
             createFile(directJarPath);
             createFile(symlinkTarget);
-            FSUtils fsShim = new FSUtils(fs);
-            fsShim.createSymlink(new Path(symlinkTarget), new Path(symlink), true);
+            FSUtils.createSymlink(new Path(symlinkTarget), new Path(symlink), true, fs);
 
             prop.put(ShareLibService.SHARE_LIB_CONF_PREFIX + ".pig", "/user/test/" + basePath.toString());
             prop.put(ShareLibService.SHARE_LIB_CONF_PREFIX + ".something_new", "/user/test/" + somethingNew.toString());
