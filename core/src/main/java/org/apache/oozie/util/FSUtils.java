@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 
 public final class FSUtils {
-    public static Path getSymLinkTarget(Path p, FileSystem fs) throws IOException {
+    public static Path getSymLinkTarget(FileSystem fs, Path p) throws IOException {
         try {
             //getSymlink doesn't work with fragment name, need to remove fragment before calling getSymlink
             Path tempPath = new URI(p.toString()).getFragment() == null ? p : new Path(new URI(p.toString()).getPath());
@@ -36,7 +36,7 @@ public final class FSUtils {
         }
     }
 
-    public static boolean isSymlink(Path p, FileSystem fs) throws IOException {
+    public static boolean isSymlink(FileSystem fs, Path p) throws IOException {
         try {
             //isSymlink doesn't work with fragment name, need to remove fragment before checking for symlink
             Path tempPath = new URI(p.toString()).getFragment() == null ? p : new Path(new URI(p.toString()).getPath());
@@ -47,7 +47,7 @@ public final class FSUtils {
         }
     }
 
-    public static void createSymlink(Path target, Path link, boolean createParent, FileSystem fs) throws IOException {
+    public static void createSymlink(FileSystem fs, Path target, Path link, boolean createParent) throws IOException {
         fs.createSymlink(target, link, createParent);
     }
 }

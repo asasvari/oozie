@@ -356,7 +356,7 @@ public class ShareLibService implements Service, Instrumentable {
         }
 
         for (Path path : symlinkMapping.get(shareLibKey).keySet()) {
-            if (!symlinkMapping.get(shareLibKey).get(path).equals(FSUtils.getSymLinkTarget(path, fs))) {
+            if (!symlinkMapping.get(shareLibKey).get(path).equals(FSUtils.getSymLinkTarget(fs, path))) {
                 synchronized (ShareLibService.class) {
                     Map<String, List<Path>> tmpShareLibMap = new HashMap<String, List<Path>>(shareLibMap);
 
@@ -367,7 +367,7 @@ public class ShareLibService implements Service, Instrumentable {
                             symlinkMapping);
 
                     LOG.info(MessageFormat.format("Symlink target for [{0}] has changed, was [{1}], now [{2}]",
-                            shareLibKey, path, FSUtils.getSymLinkTarget(path, fs)));
+                            shareLibKey, path, FSUtils.getSymLinkTarget(fs, path)));
                     loadShareLibMetaFile(tmpShareLibMap, tmpSymlinkMapping, tmpShareLibConfigMap, sharelibMappingFile,
                             shareLibKey);
                     shareLibMap = tmpShareLibMap;
@@ -637,8 +637,8 @@ public class ShareLibService implements Service, Instrumentable {
         for (String dfsPath : pathList) {
             Path path = new Path(dfsPath);
             getPathRecursively(fs, new Path(dfsPath), listOfPaths, shareLibKey, shareLibConfigMap);
-            if (FSUtils.isSymlink(path, fs)) {
-                symlinkMappingforAction.put(path, FSUtils.getSymLinkTarget(path, fs));
+            if (FSUtils.isSymlink(fs, path)) {
+                symlinkMappingforAction.put(path, FSUtils.getSymLinkTarget(fs, path));
             }
         }
 
