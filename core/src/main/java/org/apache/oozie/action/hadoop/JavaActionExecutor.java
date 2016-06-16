@@ -140,7 +140,7 @@ public class JavaActionExecutor extends ActionExecutor {
         List<Class> classes = new ArrayList<Class>();
         classes.add(LauncherMapper.class);
         classes.add(OozieLauncherInputFormat.class);
-        classes.add(org.apache.oozie.action.hadoop.LauncherMain.class);
+        classes.add(LauncherMain.class);
         classes.addAll(Services.get().get(URIHandlerService.class).getClassesForLauncher());
         return classes;
     }

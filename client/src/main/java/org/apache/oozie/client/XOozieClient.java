@@ -35,7 +35,7 @@ import org.json.simple.JSONValue;
 public class XOozieClient extends OozieClient {
     public static final String RM = "yarn.resourcemanager.address";
     public static final String NN = "fs.default.name";
-    public static final String NN_2  = "fs.defaultFS";
+    public static final String NN_2 = "fs.defaultFS";
 
     public static final String PIG_SCRIPT = "oozie.pig.script";
 
