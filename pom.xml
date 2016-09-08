@@ -122,6 +122,7 @@
         <module>minitest</module>
         <module>distro</module>
         <module>zookeeper-security-tests</module>
+        <module>jetty</module>
     </modules>
 
     <repositories>
