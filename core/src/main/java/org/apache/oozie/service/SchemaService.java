@@ -28,6 +28,7 @@ import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.apache.oozie.ErrorCode;
 import org.apache.oozie.util.IOUtils;
@@ -101,9 +102,8 @@ public class SchemaService implements Service {
             s.setSystemId(schemaName);
             sources.add(s);
         }
-        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        factory.setResourceResolver(new ResourceResolver());
-        return factory.newSchema(sources.toArray(new StreamSource[sources.size()]));
+        schemaFactory.setResourceResolver(new ResourceResolver());
+        return schemaFactory.newSchema(sources.toArray(new StreamSource[sources.size()]));
     }
 
     /**
@@ -188,4 +188,29 @@ public class SchemaService implements Service {
             return id;
         }
     }
+
+    /**
+     * Returns validator for schema
+     * @param schemaName
+     * @return
+     * @throws SAXException
+     */
+    public Validator getValidator(SchemaName schemaName) throws SAXException {
+        return getValidator(getSchema(schemaName));
+    }
+
+    /**
+     * Returns validator for schema
+     * @param schema
+     * @return
+     * @throws SAXException
+     */
+    public static Validator getValidator(Schema schema) throws SAXException {
+        Validator validator = schema.newValidator();
+        validator.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        validator.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        validator.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        return validator;
+    }
+
 }
