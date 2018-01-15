@@ -33,7 +33,13 @@ import javax.xml.validation.Validator;
 import org.apache.oozie.ErrorCode;
 import org.apache.oozie.util.IOUtils;
 import org.apache.oozie.util.schema.ResourceResolver;
+import org.apache.xerces.xni.XMLResourceIdentifier;
+import org.apache.xerces.xni.XNIException;
+import org.apache.xerces.xni.parser.XMLEntityResolver;
+import org.apache.xerces.xni.parser.XMLInputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 
 /**
@@ -76,6 +82,10 @@ public class SchemaService implements Service {
 
     private Schema slaSchema;
 
+    private SchemaFactory schemaFactory;
+
+    private static NoXMLEntityResolver xmlEntityResolver;
+
     private Schema loadSchema(String baseSchemas, String extSchema) throws SAXException, IOException {
         Set<String> schemaNames = new HashSet<String>();
         String[] schemas = ConfigurationService.getStrings(baseSchemas);
@@ -115,10 +125,12 @@ public class SchemaService implements Service {
     @Override
     public void init(Services services) throws ServiceException {
         try {
+            schemaFactory = createSchemaFactory();
             wfSchema = loadSchema(WF_CONF_SCHEMAS, WF_CONF_EXT_SCHEMAS);
             coordSchema = loadSchema(COORD_CONF_SCHEMAS, COORD_CONF_EXT_SCHEMAS);
             bundleSchema = loadSchema(BUNDLE_CONF_SCHEMAS, BUNDLE_CONF_EXT_SCHEMAS);
             slaSchema = loadSchema(SLA_CONF_SCHEMAS, SLA_CONF_EXT_SCHEMAS);
+            xmlEntityResolver = new NoXMLEntityResolver();
         }
         catch (SAXException ex) {
             throw new ServiceException(ErrorCode.E0130, ex.getMessage(), ex);
@@ -126,6 +138,19 @@ public class SchemaService implements Service {
         catch (IOException ex) {
             throw new ServiceException(ErrorCode.E0131, ex.getMessage(), ex);
         }
+    }
+
+    /**
+     * Creates schema factory
+     * @return
+     * @throws SAXNotRecognizedException
+     * @throws SAXNotSupportedException
+     */
+    private SchemaFactory createSchemaFactory() throws SAXNotRecognizedException, SAXNotSupportedException {
+        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        factory.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
+        return factory;
     }
 
     /**
@@ -210,7 +235,15 @@ public class SchemaService implements Service {
         validator.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         validator.setFeature("http://xml.org/sax/features/external-general-entities", false);
         validator.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        validator.setProperty("http://apache.org/xml/properties/internal/entity-resolver", xmlEntityResolver);
         return validator;
     }
 
+    private static class NoXMLEntityResolver implements XMLEntityResolver {
+        @Override
+        public XMLInputSource resolveEntity(XMLResourceIdentifier xmlResourceIdentifier) throws XNIException, IOException {
+            throw new IOException("DOCTYPE is disallowed when the feature http://apache.org/xml/features/disallow-doctype-decl "
+                    + "set to true.");
+        }
+    }
 }
